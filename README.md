@@ -94,3 +94,38 @@ Contributions are welcome! If you have any ideas, suggestions, or improvements, 
 - **Project Overview**: The README provides an overview of the Shortify app, describing its features, technologies used, and project structure.
 - **Getting Started**: Instructions are provided to help new users set up and run the project locally.
 - **Contributing**: Guidelines are included for contributing to the project.
+
+
+shortify/
+├── public/                 # Public assets like images and fonts
+├── src/
+│   ├── app/                # Next.js app directory for routes
+│   ├── components/         # Reusable components
+│   ├── styles/             # Global and component-specific styles
+│   ├── utils/              # Utility functions
+│   ├── pages/              # Next.js pages
+│   ├── types/              # TypeScript types
+│   ├── services/           # Services like API calls
+│   ├── middlewares/        # Middleware functions
+│   ├── models/             # Database models
+│   ├── config/             # Configuration files
+├── .eslintrc.json          # ESLint configuration
+├── .gitignore              # Files to ignore in Git
+├── next.config.js          # Next.js configuration
+├── postcss.config.js       # PostCSS configuration for Tailwind CSS
+├── tailwind.config.js      # Tailwind CSS configuration
+├── tsconfig.json           # TypeScript configuration
+└── package.json            # Project metadata and dependencies
+Technologies Used
+Next.js: A React framework for server-side rendering and building static web applications.
+TypeScript: A statically typed superset of JavaScript that enhances code quality and developer experience.
+Tailwind CSS: A utility-first CSS framework for building custom designs without writing custom CSS.
+
+Contributing
+Contributions are welcome! If you have any ideas, suggestions, or improvements, feel free to open an issue or submit a pull request.
+
+
+### Summary:
+- **Project Overview**: The README provides an overview of the Shortify app, describing its features, technologies used, and project structure.
+- **Getting Started**: Instructions are provided to help new users set up and run the project locally.
+- **Contributing**: Guidelines are included for contributing to the project.
