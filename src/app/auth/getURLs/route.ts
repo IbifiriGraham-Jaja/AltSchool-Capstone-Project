@@ -17,7 +17,8 @@ export async function GET() {
   const { data, error } = await supabase
     .from("URLS")
     .select("*")
-    .eq("user_id", user.id); // Filter by user_id
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false }); 
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

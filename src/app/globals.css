@@ -3,14 +3,12 @@
 @tailwind utilities;
 
 button {
-  @apply border-none bg-cyan text-white font-medium text-base;
+  @apply border-none bg-cyan text-white font-medium text-sm lg:text-base hover:bg-Cyanhover;
 }
-
 input {
   @apply ring-1 ring-cyan p-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan;
 }
-
-h1, h2, h3, h4, h5, h6 {
+h1,h2,h3,h4,h5,h6 {
   @apply text-VeryDarkBlue;
 }
 
@@ -21,11 +19,16 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: hsl(0, 0%, 93%);
+  background: hsl(0, 0%, 75%);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: hsl(257, 27%, 20%);
+  background: hsl(194, 34%, 65%);
   border-radius: 5px;
 }
+
+
+/* *{
+  border: 0.2px solid red;
+} */

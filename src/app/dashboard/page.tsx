@@ -32,7 +32,7 @@ export default async function Dashboard() {
     <main className="bg-Gray px-6 md:px-10 lg:px-20 pt-12 min-h-screen">
       <nav className="flex justify-between items-center">
         <h1 className="font-bold text-xl md:text-2xl lg:text-3xl mb-4 text-VeryDarkBlue ">
-          Welcome, {userName}
+          Hi there, {userName}
         </h1>
         <form action="./auth/signout" method="POST">
           <button

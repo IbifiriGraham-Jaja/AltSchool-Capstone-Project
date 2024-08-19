@@ -5,7 +5,7 @@ import { FaLink } from "react-icons/fa6";
 import { useState, useEffect } from "react";
 
 function LinkStats() {
-  const [totalLinks, setTotalLinks] = useState(0);
+  const [totalLinks, setTotalLinks] = useState<number>(0);
 
   const fetchUpdatedStats = async () => {
     try {
@@ -32,22 +32,22 @@ function LinkStats() {
     <div className="flex justify-between mt-8 text-VeryDarkBlue">
       <div
         className="flex flex-col md:flex-row md:gap-5 items-center font-semibold text-lg bg-white p-3 md:p-5 rounded-xl md:px-10 shadow-md hover:cursor-pointer"
-        title="Total number of links shortened"
+        title="This is the total number of links you have shortened"
       >
         <p className="flex gap-2 items-center ">
-          <FaLink size={25} color="hsl(256, 26%, 33%)" /> Total Links
+          <FaLink size={25} color="hsl(256, 26%, 33%)" /> Total No. of Links
         </p>
         <p>{totalLinks}</p>
       </div>
       <div
         className="flex flex-col md:flex-row md:gap-5 items-center font-semibold text-lg bg-white p-3 md:p-5 rounded-xl md:px-10 shadow-md hover:cursor-pointer"
-        title="Total number of clicks gotten from all links"
+        title="This is the total number of clicks gotten from all links summed together"
       >
         <p className="flex gap-2 items-center ">
           <TbHandClick size={25} color="hsl(256, 26%, 33%)" />
-          Total clicks
+          Total No. of clicks
         </p>
-        <p>15</p>
+        <p>20</p>
       </div>
     </div>
   );

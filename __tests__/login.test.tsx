@@ -53,6 +53,6 @@ describe("Login", () => {
     // If you expect a specific element to appear, check for that element.
 
     // Example:
-    // expect(screen.getByText(/Welcome, test@example.com!/i)).toBeInTheDocument();
+    // expect(screen.getByText(/Hi there, test@example.com!/i)).toBeInTheDocument();
   });
 });

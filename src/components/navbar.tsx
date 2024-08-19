@@ -4,10 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { IoMenu } from "react-icons/io5";
 import { MdOutlineClose } from "react-icons/md";
-import shortifylogo from "../../public/shortify logo.webp";
+import shortlyLogo from "../../public/shortify logo.webp";
 
 function NavBar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -15,27 +15,30 @@ function NavBar() {
 
   return (
     <header>
-      <nav className="flex justify-between px-6 md:px-10 lg:px-20 py-9 md:py-12">
+      <nav className="flex justify-between px-6 md:px-10 lg:px-20 py-9 md:py-10">
         <div className="flex items-center justify-center md:gap-x-8 lg:gap-x-14">
           <Link href="/">
-            <Image src={shortifylogo} alt="Shortify_logo" />
+            <Image src={shortlyLogo} alt="Shortly_logo" />
           </Link>
           <ul className="text-GrayishViolet text-base font-medium hidden md:flex md:gap-x-8 lg:gap-x-10">
             <li>
-              <a href="#">Components</a>
+              <a className="hover:text-VeryDarkViolet" href="#">Features</a>
             </li>
             <li>
-              <a href="#">Pricing</a>
+              <a className="hover:text-VeryDarkViolet" href="#">Pricing</a>
             </li>
             <li>
-              <a href="#">Resources</a>
+              <a className="hover:text-VeryDarkViolet" href="#">Resources</a>
+            </li>
+            <li>
+              <a className="hover:text-VeryDarkViolet" href="#">Contact</a>
             </li>
           </ul>
         </div>
         <div className="hidden md:flex md:gap-x-8 lg:gap-x-10 items-center">
           <Link
             href="/login"
-            className="font-medium text-base text-GrayishViolet"
+            className="font-medium text-base text-GrayishViolet hover:text-VeryDarkViolet"
           >
             Login
           </Link>
@@ -60,7 +63,7 @@ function NavBar() {
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="bg-DarkViolet text-white md:hidden absolute top-20 right-5 w-[90%] rounded-lg h-20vh flex flex-col items-center justify-center space-y-4 z-50 py-4 ">
+        <div className="bg-DarkViolet text-white md:hidden absolute top-20 right-5 w-[90%] rounded-lg h-20vh flex flex-col items-center justify-center space-y-4 z-50 py-4">
           <ul className="flex flex-col items-center gap-y-4">
             <li>
               <a href="#" className="text-white font-medium">

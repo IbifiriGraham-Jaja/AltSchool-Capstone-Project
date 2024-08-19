@@ -27,15 +27,15 @@ function Stats() {
   const articleInfo = articles.map((data) => (
     <article
       key={data.header}
-      className="bg-white rounded-xl px-5 py-8 w-[320px] h-[250px] relative"
+      className="bg-white rounded-xl px-5 py-6 lg:w-[320px] lg:h-[250px] relative text-center md:text-left"
     >
-      <div className="h-16 w-16 rounded-full bg-DarkViolet flex items-center justify-center absolute -top-8">
+      <div className="h-16 w-16 rounded-full bg-DarkViolet flex items-center justify-center m-auto absolute -top-8">
         <Image src={data.image} alt={data.alt} width={35} height={35} />
       </div>
       <h3 className="mb-3 text-DarkViolet font-bold text-lg mt-9">
         {data.header}
       </h3>
-      <p className="text-sm text-GrayishViolet leading-6 max-w-[260px]">
+      <p className="text-sm text-GrayishViolet leading-6 md:max-w-[260px]">
         {data.text}
       </p>
     </article>
@@ -43,7 +43,7 @@ function Stats() {
   return (
     <section className="flex flex-col items-center bg-Gray mt-8 pb-20">
       <Shortener />
-      <div className="text-center w-[450px]">
+      <div className="text-center w-[80%] md:w-[450px]">
         <h2 className="font-bold text-3xl text-VeryDarkBlue">
           Advanced Stats
         </h2>
@@ -66,7 +66,7 @@ export function Shortener() {
         <form className="flex justify-center gap-5 w-full">
           <input
             type="text"
-            placeholder="short-ify your link here..."
+            placeholder="shorten your link here..."
             className="w-3/4 p-4 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan"
           />
           <button type="submit" className="px-8 rounded-lg">
