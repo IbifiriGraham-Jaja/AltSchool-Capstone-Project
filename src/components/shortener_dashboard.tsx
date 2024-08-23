@@ -7,14 +7,21 @@ import Image from "next/image";
 import Modal from "./modal";
 import Loading from "./urlLoading";
 import { useEffect, useState } from "react";
+import LinkNotFound from "./linknotfound";
 import Link from "next/link";
+import UrlDetailsModal from "./getclicks";
 
 export function DashboardShortener() {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [urls, setUrls] = useState([]);
+  const [search, setSearch] = useState<string>("");
 
   const handleAddUrl = (newUrl) => {
-    setUrls((prevUrls) => [...prevUrls, newUrl]);
+    setUrls((prevUrls) => [newUrl, ...prevUrls]);
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
   };
 
   return (
@@ -30,6 +37,7 @@ export function DashboardShortener() {
             id="search"
             className="w-full"
             placeholder="Search for a link...."
+            onChange={handleSearch}
           />
         </form>
         <button
@@ -41,7 +49,7 @@ export function DashboardShortener() {
           Shorten Link
         </button>
       </div>
-      <ShortenedComp urls={urls} setUrls={setUrls} />
+      <ShortenedComp urls={urls} setUrls={setUrls} search={search} />
       <Modal
         isVisble={showModal}
         onClose={() => {
@@ -53,25 +61,24 @@ export function DashboardShortener() {
   );
 }
 
-function ShortenedComp({ urls, setUrls }) {
-  const [loading, setLoading] = useState(true);
+function ShortenedComp({ urls, setUrls, search }) {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showDetails, setShowDetails] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchUrls() {
       setLoading(true);
 
       try {
-        fetch("./auth/getURLs")
-          .then((res) => res.json())
-          .then((data) => {
-            if (!data.error) {
-              setUrls(data);
-              setLoading(false);
-            } else {
-              console.error(data.error);
-              setLoading(false);
-            }
-          });
+        const response = await fetch("./auth/getURLs");
+        const data = await response.json();
+        if (!data.error) {
+          setUrls(data);
+          setLoading(false);
+        } else {
+          console.error(data.error);
+          setLoading(false);
+        }
       } catch (error) {
         console.error("Error fetching URLs:", error);
         setLoading(false);
@@ -88,7 +95,7 @@ function ShortenedComp({ urls, setUrls }) {
   if (urls.length === 0) {
     return (
       <div className="text-center text-VeryDarkBlue">
-        <p>No shortened URLs found. Create a new one!</p>
+        <p>No URLs found. Start Now!</p>
       </div>
     );
   }
@@ -100,23 +107,19 @@ function ShortenedComp({ urls, setUrls }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id }), // Send the ID in the request body
+        body: JSON.stringify({ id }),
       });
 
       if (!response.ok) {
         throw new Error("Failed to delete URL");
       }
 
-      const data = await response.json();
-
-      //update the UI by removing the deleted URL from the state
       setUrls((prevUrls) => prevUrls.filter((url) => url.id !== id));
     } catch (error) {
       console.error("Error deleting URL:", error);
     }
   };
 
-  /* Function to download QR code image */
   const downloadQrCode = async (url) => {
     try {
       const response = await fetch(url.qr_code, {
@@ -131,21 +134,54 @@ function ShortenedComp({ urls, setUrls }) {
       const blobUrl = window.URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = blobUrl;
-      anchor.download = `${url.tittle || "download"}.png`;
+      anchor.download = `${url.title || "download"}.png`;
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
-
-      // Release the blob URL after download
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Error downloading the QR code:", error);
     }
   };
 
+  async function handleLinkClick(urlId, shortUrl) {
+    try {
+      // Send a POST request to record the click details
+      const response = await fetch("/auth/storeClicks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: urlId }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to record click");
+      }
+
+      // Open the shortened URL in a new tab
+      window.open(shortUrl, "_blank");
+    } catch (error) {
+      console.error("Error handling link click:", error);
+      window.open(shortUrl, "_blank"); // Still open the URL even if the API call fails
+    }
+  }
+
+  const filteredUrls = urls.filter((url) =>
+    search.toLowerCase() === ""
+      ? url
+      : url.title.toLowerCase().includes(search.toLowerCase()) ||
+        url.short_url.toLowerCase().includes(search.toLowerCase()) ||
+        url.original_url.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (filteredUrls.length === 0) {
+    return <LinkNotFound />;
+  }
+
   return (
     <div className="mb-3 flex flex-col gap-4 justify-between bg-Gray">
-      {urls.map((url) => (
+      {filteredUrls.map((url) => (
         <article
           key={url.id}
           className="mb-3 flex flex-col md:flex-row justify-between w-full items-center bg-white rounded-xl shadow-lg p-5 "
@@ -166,7 +202,15 @@ function ShortenedComp({ urls, setUrls }) {
               <h2 className="font-bold text-lg md:text-2xl lg:text-3xl">
                 {url.title}
               </h2>
-              <Link href={url.short_url} target="_blank" className="hover:underline md:text-lg lg:text-xl font-semibold text-LightViolet hover:cursor-pointer">
+              <Link
+                href={url.short_url}
+                target="_blank"
+                className="hover:underline md:text-lg lg:text-xl font-semibold text-LightGray hover:cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent the default link behavior
+                  handleLinkClick(url.id, url.short_url); // Call the function with the URL ID and short URL
+                }}
+              >
                 Shortened URL: {url.short_url}
               </Link>
               <p className="hover:underline text-xs lg:text-sm">
@@ -197,18 +241,31 @@ function ShortenedComp({ urls, setUrls }) {
               <FaRegCopy size={19} color="hsl(256, 26%, 33%)" />
             </button>
             <button
-              title="Delete shortened URL"
+              title="Delete shortened URLs"
               className="bg-transparent p-2 rounded-full hover:bg-Gray"
               onClick={() => deleteURl(url.id)}
             >
               <MdDeleteOutline size={24} color="hsl(256, 26%, 33%)" />
             </button>
-            <button title="View URL stats" className="rounded-full px-4 py-1">
+            <button
+              title="View URL stats"
+              className="rounded-full px-4 py-1"
+              onClick={() => setShowDetails(url.id)}
+            >
               details
             </button>
           </div>
+          {showDetails === url.id && (
+            <UrlDetailsModal
+              isVisible={showDetails === url.id}
+              onClose={() => setShowDetails(null)}
+              urlId={url.id}
+            />
+          )}
         </article>
       ))}
     </div>
   );
 }
+
+export default ShortenedComp;

@@ -1,36 +1,47 @@
-import { NextResponse } from 'next/server';
 import { createClient } from "../../../utils/supabase/server";
+import { NextResponse, NextRequest } from "next/server";
 
-// Define the route handler for GET requests
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const Url_ID = searchParams.get('Url_ID');
-
-  if (!Url_ID) {
-    return NextResponse.json({ error: 'Url_ID is required' }, { status: 400 });
-  }
-
-  try {
-    const data = await getClicks(Url_ID);
-    return NextResponse.json(data);
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}
-
-// Define the getClicks function
-async function getClicks(Url_ID: string) {
+export async function GET(request: NextRequest) {
   const supabase = createClient();
+  
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  const { data, error } = await supabase
+  // Get the authenticated user
+  if (authError || !user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Parse the Url_id from the query parameters
+  const url = new URL(request.url);
+  const urlId = url.searchParams.get("urlId");
+
+  if (!urlId) {
+    return NextResponse.json({ error: "Url_id is required" }, { status: 400 });
+  }
+
+  const { data: urlData, error: urlError } = await supabase
+    .from("URLS")
+    .select("*")
+    .eq("id", urlId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (urlError) {
+    return NextResponse.json({ error: urlError.message }, { status: 500 });
+  }
+
+  const { data: clickData, error: clickError } = await supabase
     .from("URL_Clicks")
     .select("*")
-    .in("Url ID", [Url_ID]); // Ensure Url_ID is passed as an array
+    .eq("url_id", urlId)
+    .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error("Error loading clicks:", error.message);
-    throw new Error("Failed to load clicks");
+  if (clickError) {
+    return NextResponse.json({ error: clickError.message }, { status: 500 });
   }
 
-  return data;
+  return NextResponse.json({ url: urlData, clicks: clickData }, { status: 200 });
 }
