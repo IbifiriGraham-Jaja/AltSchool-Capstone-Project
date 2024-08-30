@@ -40,7 +40,7 @@ To get a local copy up and running, follow these steps.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/IbifiriGrahamjaja/shortify.git
+   git clone https://github.com/IbifiriGrahamjaja/AltSchool-Capstone-Project.git
 
 Navigate to the project directory:
 
